@@ -16,8 +16,9 @@ DB_USERNAME="${DB_USERNAME}"
 DB_PASSWORD="${DB_PASSWORD}"
 EOF
 
-# Correr migraciones
+# Migraciones + Seeders
 php artisan migrate --force
+php artisan db:seed --force
 
 # Cachear
 php artisan config:cache

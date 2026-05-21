@@ -1,0 +1,281 @@
+// ==============================================================
+  //  ECOCREATIONS S.A.C.  -  Tema Bootstrap personalizado
+  //  Paleta: Bosque tibio (extraída del .pen)
+  // ==============================================================
+
+  // --------------------------------------------------------------
+  // 1) VARIABLES PROPIAS  (deben ir ANTES de importar Bootstrap)
+  // --------------------------------------------------------------
+
+  // Paleta principal
+  $primary:    #3D4F2E;  // verde bosque
+  $secondary:  #A8B89A;  // verde salvia
+  $success:    #5A7548;  // verde musgo
+  $info:       #4A6B7A;  // azul tinta
+  $warning:    #C4854A;  // ámbar
+  $danger:     #9B3B2E;  // ladrillo
+  $light:      #F5F0E6;  // crema
+  $dark:       #1F1B16;  // tierra oscura
+
+  // Color de acento (no es estándar de Bootstrap)
+  $accent:     #C4724A;  // terracota
+
+  // Fondos y superficies
+  $body-bg:        #F5F0E6;  // crema (fondo general)
+  $body-color:     #1F1B16;  // texto principal
+  $border-color:   #D9D2C2;
+  $muted-color:    #6B6359;
+
+  // Tipografía
+  $font-family-sans-serif: 'Inter Tight', system-ui, -apple-system, sans-serif;
+  $font-family-serif:      'Fraunces', Georgia, serif;
+  $font-family-monospace:  'JetBrains Mono', SFMono-Regular, Consolas, monospace;
+
+  $font-family-base:       $font-family-sans-serif;
+  $headings-font-family:   $font-family-serif;
+  $headings-font-weight:   500;
+  $headings-color:         $dark;
+
+  // Bordes y radios
+  $border-radius:       12px;   // tu --radius-m
+  $border-radius-sm:    4px;    // tu --radius-s
+  $border-radius-lg:    20px;   // tu --radius-l
+  $border-radius-pill:  999px;
+
+  // Botones
+  $btn-padding-y:       0.75rem;
+  $btn-padding-x:       1.5rem;
+  $btn-font-weight:     500;
+  $btn-border-radius:   $border-radius;
+
+  // Cards
+  $card-border-radius:  $border-radius;
+  $card-border-color:   $border-color;
+
+  // --------------------------------------------------------------
+  // 2) IMPORTAR BOOTSTRAP COMPLETO
+  // --------------------------------------------------------------
+  @import "bootstrap/scss/bootstrap";
+
+  // --------------------------------------------------------------
+  // 3) IMPORTAR ICONOS DE BOOTSTRAP
+  // --------------------------------------------------------------
+  @import "bootstrap-icons/font/bootstrap-icons.css";
+
+  // --------------------------------------------------------------
+  // 4) UTILIDADES PROPIAS  (después de Bootstrap)
+  // --------------------------------------------------------------
+
+  // Color accent (terracota) como utility
+  .text-accent { color: $accent !important; }
+  .bg-accent   { background-color: $accent !important; }
+
+  .btn-accent {
+      background-color: $accent;
+      color: #FFFAF0;
+      border-color: $accent;
+
+      &:hover,
+      &:focus {
+          background-color: darken($accent, 8%);
+          border-color: darken($accent, 8%);
+          color: #FFFAF0;
+      }
+  }
+
+  .btn-outline-accent {
+      color: $accent;
+      border-color: $accent;
+      background-color: transparent;
+
+      &:hover {
+          background-color: $accent;
+          color: #FFFAF0;
+      }
+  }
+
+  // Tipografías auxiliares
+  .font-serif { font-family: $font-family-serif !important; }
+  .font-mono  { font-family: $font-family-monospace !important; }
+
+  // Texto suave (gris cálido)
+  .text-muted-eco { color: $muted-color !important; }
+
+  // Tamaños extra (Bootstrap solo llega a fs-6)
+  .fs-7 { font-size: 0.8125rem !important; }   // ~13px - texto de soporte
+  .fs-8 { font-size: 0.6875rem !important; }   // ~11px - kicker labels, badges, footer
+
+  // Links del sidebar legal (estado no-activo)
+  .legal-nav-link {
+      transition: background-color 0.2s ease;
+
+      &:hover {
+          background-color: $light;
+      }
+  }
+
+  // Lista de links del footer (herencia para no repetir clases)
+  .footer-links {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+
+      li {
+          margin-bottom: 0.5rem;
+      }
+
+      a {
+          color: $light;
+          text-decoration: none;
+          font-size: 0.875rem;
+          transition: color 0.2s ease;
+
+          &:hover {
+              color: $accent;
+          }
+      }
+  }
+
+  // Animación de entrada del header
+  @keyframes slideDownFade {
+      from {
+          opacity: 0;
+          transform: translateY(-100%);
+      }
+      to {
+          opacity: 1;
+          transform: translateY(0);
+      }
+  }
+
+  .navbar-animated {
+      animation: slideDownFade 0.5s ease-out;
+  }
+
+  // Card de categoría con hover sutil
+  .category-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+      &:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 12px 24px rgba($dark, 0.08);
+
+          .category-arrow {
+              transform: translate(4px, -4px);
+          }
+      }
+  }
+
+  .category-arrow {
+      transition: transform 0.3s ease;
+      display: inline-block;
+  }
+
+  // Botón con animación (flecha desliza + lift + brillo)
+  .btn-animated {
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+      .btn-animated-label {
+          display: inline-flex;
+          align-items: center;
+          position: relative;
+          z-index: 1;
+      }
+
+      .btn-animated-icon {
+          transition: transform 0.25s ease;
+      }
+
+      // Brillo que cruza el botón al pasar el cursor
+      &::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(120deg, transparent, rgba($light, 0.25), transparent);
+          transition: left 0.5s ease;
+      }
+
+      &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 20px rgba($accent, 0.35);
+
+          .btn-animated-icon {
+              transform: translateX(4px);
+          }
+
+          &::before {
+              left: 100%;
+          }
+      }
+
+      &:active {
+          transform: translateY(0);
+          box-shadow: 0 3px 8px rgba($accent, 0.3);
+      }
+  }
+
+  // Card de FAQ (link) con hover
+  .faq-card {
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+
+      .faq-card-arrow {
+          transition: transform 0.25s ease;
+      }
+
+      &:hover {
+          background-color: $secondary !important;
+          border-color: $secondary !important;
+
+          .faq-card-arrow {
+              transform: translate(3px, -3px);
+          }
+      }
+  }
+
+  // Card de testimonio con hover verde
+  .testimonio-card {
+      background-color: $light;
+      border: 1px solid $border-color;
+      transition: all 0.3s ease;
+      cursor: pointer;
+
+      .testimonio-text,
+      .testimonio-name {
+          color: $dark;
+          transition: color 0.3s ease;
+      }
+
+      .testimonio-city {
+          color: $muted-color;
+          transition: color 0.3s ease;
+      }
+
+      .testimonio-quote {
+          color: $accent;
+          transition: color 0.3s ease;
+      }
+
+      &:hover,
+      &.is-active {
+          background-color: $primary;
+          border-color: $primary;
+
+          .testimonio-text,
+          .testimonio-name {
+              color: $light;
+          }
+
+          .testimonio-city {
+              color: rgba($light, 0.7);
+          }
+
+          .testimonio-quote {
+              color: $secondary;
+          }
+      }
+  }

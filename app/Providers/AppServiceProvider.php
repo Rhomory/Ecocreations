@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -20,7 +19,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // La paginación usa el estilo de Bootstrap 5 (no Tailwind, que es el default)
-        Paginator::useBootstrapFive();
+        if (config('app.env') === 'production') {
+            \URL::forceScheme('https');
+        }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Producto;
+use App\Models\Product;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -10,7 +10,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
 
-        if (Producto::count() === 0) {
+        if (Product::count() === 0) {
             $this->call([
                 CategorySeeder::class,
                 PaymentMethodSeeder::class,

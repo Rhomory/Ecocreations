@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @method static int count(string $columns = '*')
+ */
 class Product extends Model
 {
     //

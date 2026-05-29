@@ -62,17 +62,23 @@ Route::post('/logout', [LoginController::class, 'logout'])
 
 /*
 |--------------------------------------------------------------------------
+| Rutas del Carrito (públicas — usa sesión, no requiere login)
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/carrito', [CartController::class, 'index'])->name('cart.index');
+Route::post('/carrito/agregar', [CartController::class, 'add'])->name('cart.add');
+Route::patch('/carrito/{item}', [CartController::class, 'update'])->name('cart.update');
+Route::delete('/carrito/{item}', [CartController::class, 'remove'])->name('cart.remove');
+
+
+/*
+|--------------------------------------------------------------------------
 | Rutas del Cliente (requieren login)
 |--------------------------------------------------------------------------
 */
 
 Route::middleware('auth')->group(function () {
-
-    // Carrito
-    Route::get('/carrito', [CartController::class, 'index'])->name('cart.index');
-    Route::post('/carrito/agregar', [CartController::class, 'add'])->name('cart.add');
-    Route::patch('/carrito/{item}', [CartController::class, 'update'])->name('cart.update');
-    Route::delete('/carrito/{item}', [CartController::class, 'remove'])->name('cart.remove');
 
     // Checkout
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
@@ -91,11 +97,12 @@ Route::middleware('auth')->group(function () {
 |--------------------------------------------------------------------------
 | Rutas del Admin (requieren login + role=admin)
 |--------------------------------------------------------------------------
-| El middleware 'admin' lo crearemos después.
-| Por ahora solo usamos 'auth'.
+| El middleware 'admin' redirige silenciosamente al home a cualquiera que
+| no sea administrador (incluidos invitados), para no revelar la existencia
+| del panel.
 */
 
-Route::middleware(['auth'])
+Route::middleware(['admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {

@@ -23,9 +23,15 @@
 
     <div class="card-body d-flex flex-column p-3">
 
-        {{-- Categoría --}}
-        <p class="font-mono fs-8 text-muted-eco text-uppercase mb-1">
-            {{ $product->category->nombre ?? 'Sin categoría' }}
+        {{-- Categoría (Enlace clickeable sobre el stretched-link) --}}
+        <p class="font-mono fs-8 text-uppercase mb-1 position-relative" style="z-index: 2;">
+            @if ($product->category)
+                <a href="{{ route('catalog.show', $product->category->slug) }}" class="text-decoration-none text-muted-eco">
+                    {{ $product->category->nombre }}
+                </a>
+            @else
+                <span class="text-muted-eco">Sin categoría</span>
+            @endif
         </p>
 
         {{-- Nombre --}}

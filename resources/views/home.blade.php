@@ -237,42 +237,42 @@
                 <div class="col-lg-7" data-aos="fade-left" data-aos-delay="100">
                     <div class="manifesto-points">
 
-                        <div class="row align-items-center border-top py-4">
+                        <div class="row align-items-md-center border-top py-4 g-3">
                             <div class="col-2 col-md-1">
                                 <span class="font-mono text-muted-eco">01</span>
                             </div>
-                            <div class="col-3 col-md-3">
+                            <div class="col-10 col-md-3">
                                 <h5 class="font-serif mb-0">Materiales</h5>
                             </div>
-                            <div class="col-7 col-md-8">
+                            <div class="col-12 col-md-8 ps-md-0 ps-5 ms-md-0 ms-1">
                                 <p class="text-muted-eco mb-0">
                                     Certificados de origen sostenible y trazabilidad completa.
                                 </p>
                             </div>
                         </div>
 
-                        <div class="row align-items-center border-top py-4">
+                        <div class="row align-items-md-center border-top py-4 g-3">
                             <div class="col-2 col-md-1">
                                 <span class="font-mono text-muted-eco">02</span>
                             </div>
-                            <div class="col-3 col-md-3">
+                            <div class="col-10 col-md-3">
                                 <h5 class="font-serif mb-0">Producción</h5>
                             </div>
-                            <div class="col-7 col-md-8">
+                            <div class="col-12 col-md-8 ps-md-0 ps-5 ms-md-0 ms-1">
                                 <p class="text-muted-eco mb-0">
                                     Talleres peruanos con trabajo justo y bajo impacto.
                                 </p>
                             </div>
                         </div>
 
-                        <div class="row align-items-center border-top border-bottom py-4">
+                        <div class="row align-items-md-center border-top border-bottom py-4 g-3">
                             <div class="col-2 col-md-1">
                                 <span class="font-mono text-muted-eco">03</span>
                             </div>
-                            <div class="col-3 col-md-3">
+                            <div class="col-10 col-md-3">
                                 <h5 class="font-serif mb-0">Impacto</h5>
                             </div>
-                            <div class="col-7 col-md-8">
+                            <div class="col-12 col-md-8 ps-md-0 ps-5 ms-md-0 ms-1">
                                 <p class="text-muted-eco mb-0">
                                     1% de cada venta va a proyectos de reforestación.
                                 </p>

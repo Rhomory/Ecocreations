@@ -67,8 +67,7 @@
                     </li>
                 @else
                     <li class="nav-item">
-                        <a class="nav-link px-1 px-lg-2" href="#" data-bs-toggle="modal"
-                            data-bs-target="#authModal" aria-label="Iniciar sesión">
+                        <a class="nav-link px-1 px-lg-2" href="{{ route('login') }}" aria-label="Iniciar sesión">
                             <i class="bi bi-person fs-5"></i>
                         </a>
                     </li>
@@ -80,7 +79,7 @@
                         href="{{ route('cart.index') }}">
                         <i class="bi bi-bag"></i>
                         <span class="d-none d-lg-inline mx-1">Carrito</span>
-                        <span class="text-light ms-1">0</span>
+                        <span class="text-light ms-1" id="cartCount">{{ $cartCount ?? 0 }}</span>
                     </a>
                 </li>
             </ul>

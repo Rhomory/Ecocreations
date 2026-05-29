@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
 {
@@ -15,8 +16,22 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
-        // Lógica de autenticación pendiente.
-        return redirect()->route('home');
+        $credenciales = $request->validate([
+            'email'    => ['required', 'email'],
+            'password' => ['required', 'string'],
+        ]);
+
+        $remember = $request->boolean('remember');
+
+        if (! Auth::attempt($credenciales, $remember)) {
+            throw ValidationException::withMessages([
+                'email' => 'Las credenciales no coinciden con nuestros registros.',
+            ])->redirectTo(route('login'));
+        }
+
+        $request->session()->regenerate();
+
+        return $this->redirigirSegunRol();
     }
 
     public function logout(Request $request)
@@ -26,5 +41,14 @@ class LoginController extends Controller
         $request->session()->regenerateToken();
 
         return redirect()->route('home');
+    }
+
+    protected function redirigirSegunRol()
+    {
+        if (Auth::user()->role === 'admin') {
+            return redirect()->intended(route('admin.dashboard'));
+        }
+
+        return redirect()->intended(route('account.index'));
     }
 }

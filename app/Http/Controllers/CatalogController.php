@@ -65,8 +65,30 @@ class CatalogController extends Controller
         return view('catalog.index', compact('products', 'categories', 'featured'));
     }
 
-    public function show($slug)
+    public function show(Request $request, $slug)
     {
-        return view('catalog.show', compact('slug'));
+        // Buscar la categoría por slug
+        $category = Category::where('slug', $slug)->firstOrFail();
+
+        // Consulta base de productos de esa categoría
+        $query = $category->products()->where('activo', true);
+
+        // --- Orden (?orden=...) ---
+        switch ($request->query('orden')) {
+            case 'precio_asc':
+                $query->orderBy('precio_base', 'asc');
+                break;
+            case 'precio_desc':
+                $query->orderBy('precio_base', 'desc');
+                break;
+            default: // 'recientes'
+                $query->latest();
+                break;
+        }
+
+        // Paginación limpia sin sidebar
+        $products = $query->paginate(12)->withQueryString();
+
+        return view('catalog.show', compact('category', 'products'));
     }
 }

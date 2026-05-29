@@ -38,8 +38,10 @@
         @include('partials.footer')
     @endunless
 
-    {{-- Modal de auth (solo se renderiza si el user es guest) --}}
-    @include('partials.auth-modal')
+    {{-- Modal de auth eliminado (ahora usa vista de login separada) --}}
+
+    {{-- Loader de transición entre páginas --}}
+    <x-page-loader />
 
     @stack('scripts')
 </body>

@@ -27,6 +27,16 @@ CLOUDINARY_URL="${CLOUDINARY_URL}"
 CLOUDINARY_UPLOAD_PRESET="${CLOUDINARY_UPLOAD_PRESET}"
 EOF
 
+# Aviso ruidoso si falta CLOUDINARY_URL (sin abortar el deploy:
+# el sitio sigue funcionando, solo las imagenes no se siembran).
+if [ -z "${CLOUDINARY_URL}" ]; then
+  echo "================================================================"
+  echo "WARN: CLOUDINARY_URL no esta seteada en las env vars de Render."
+  echo "      Las imagenes de productos NO se podran subir."
+  echo "      Agregala en Render Dashboard -> Environment."
+  echo "================================================================"
+fi
+
 # Migraciones + Seeders (seeders son idempotentes; no duplican datos)
 php artisan migrate --force
 php artisan db:seed --force

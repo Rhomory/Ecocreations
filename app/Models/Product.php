@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Blameable;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -9,7 +10,20 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Product extends Model
 {
-    //
+    use Blameable;
+
+    protected $fillable = [
+        'category_id',
+        'nombre',
+        'slug',
+        'descripcion_corta',
+        'descripcion_larga',
+        'precio_base',
+        'es_personalizable',
+        'es_destacado',
+        'material',
+        'activo',
+    ];
 
     public function category()
     {

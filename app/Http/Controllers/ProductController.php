@@ -8,10 +8,10 @@ class ProductController extends Controller
 {
     public function show(string $slug)
     {
-        // Producto activo + categoría, imágenes ordenadas y variantes activas con stock disponible
+        // Producto activo + categoría, imágenes (principal primero) y variantes activas con stock disponible
         $product = Product::with([
                 'category',
-                'images' => fn ($q) => $q->orderBy('orden'),
+                'images' => fn ($q) => $q->orderByDesc('es_principal')->orderBy('orden'),
                 'variants' => fn ($q) => $q->where('activo', true)->orderBy('id'),
             ])
             ->where('slug', $slug)

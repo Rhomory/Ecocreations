@@ -2,11 +2,24 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Blameable;
 use Illuminate\Database\Eloquent\Model;
 
 class ProductVariant extends Model
 {
-    //
+    use Blameable;
+
+    protected $fillable = [
+        'product_id',
+        'sku',
+        'color',
+        'tamano',
+        'precio_extra',
+        'stock',
+        'imagen',
+        'cloudinary_public_id',
+        'activo',
+    ];
 
     public function product()
     {

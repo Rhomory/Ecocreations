@@ -46,11 +46,19 @@ The committed `.env` uses **`DB_CONNECTION=pgsql`** (matching the Render/Docker 
 
 Standard Laravel 12 skeleton (slim `bootstrap/app.php`, no Kernel files; middleware/routing/exceptions configured via the `Application::configure` fluent API). Single route file `routes/web.php`.
 
-**Routing tiers** (`routes/web.php`): public pages → `guest` auth routes → `auth`-gated client routes (cart, checkout, account) → `admin`-prefixed routes guarded by the `admin` middleware alias (`EnsureUserIsAdmin`, registered in `bootstrap/app.php`). The admin middleware silently `redirect()->route('home')` for anyone not authenticated with `role === 'admin'` — it deliberately does NOT return 403, to avoid revealing the admin panel exists. So `/admin` looks identical to a normal redirect for guests and regular clients.
+**Routing tiers** (`routes/web.php`): public pages → `guest` auth routes → public cart routes (no auth required — session-scoped guest cart) → `auth`-gated client routes (checkout, account) → `admin`-prefixed routes guarded by the `admin` middleware alias (`EnsureUserIsAdmin`, registered in `bootstrap/app.php`). The admin middleware silently `redirect()->route('home')` for anyone not authenticated with `role === 'admin'` — it deliberately does NOT return 403, to avoid revealing the admin panel exists. So `/admin` looks identical to a normal redirect for guests and regular clients.
 
 **Controllers** split into `Admin/`, `Auth/`, and top-level storefront controllers (`Home`, `Catalog`, `Product`, `Cart`, `Checkout`, `Account`, `Page`). Admin product/category/coupon use `Route::resource`; order management is custom (`index`/`show`/`updateStatus`).
 
-**Models** (`app/Models/`) cover the full domain: `User` → `ClientProfile`/`Address`/`Cart`/`Order`; `Cart` → `CartItem`; `Order` → `OrderItem`/`Invoice`/`OrderStatusHistory`; `Product` → `ProductImage`/`ProductVariant`/`Category`; plus `Coupon` and `PaymentMethod`. 18 migrations define the schema; 6 seeders orchestrated by `DatabaseSeeder`.
+**Models** (`app/Models/`) cover the full domain: `User` → `ClientProfile`/`Address`/`Cart`/`Order`; `Cart` → `CartItem`; `Order` → `OrderItem`/`Invoice`/`OrderStatusHistory`; `Product` → `ProductImage`/`ProductVariant`/`Category`; plus `Coupon` and `PaymentMethod`. 19 migrations define the schema; 6 seeders orchestrated by `DatabaseSeeder`.
+
+**Cart + Checkout flow (real, persists in DB):**
+- `carts` keyed by either `user_id` (logged-in) OR `session_id` (guest) — both nullable. Original `unique(user_id)` constraint was relaxed by the `add_session_id_to_carts_table` migration.
+- `CartController` resolves the active cart via `cartActual()` (auth → user_id, guest → session_id). Items live in `cart_items` with `precio_unitario` snapshot, `customization->grabado` JSON for personalization. Quantities consolidate by matching `product_variant_id` + customization.
+- `CartController::fusionarCarritoEnLogin(userId, sessionId)` is called by `LoginController` and `RegisterController` to merge the guest cart into the user's cart on auth. Pass the **pre-regenerate** session id.
+- The navbar counter is rendered via `AppServiceProvider::boot()` → `View::composer('partials.navbar')` → `CartController::contarUnidades()` (static; reads from DB on every request).
+- `CheckoutController::process()` runs the whole order creation inside a `DB::transaction`: creates `Address`, generates `numero_orden` (`ECO-YYYY-NNNNN`), creates `Order` + `OrderItem` rows, decrements `product_variants.stock`, writes the initial `OrderStatusHistory`, empties the cart. State is `pagado` for niubiz/yape/plin (with `pagado_at = now()`); `cod` stays `pendiente`. IGV is computed inclusive: `igv = total - total/(1+0.18)`.
+- `CheckoutController::confirmation($id)` enforces `where user_id = Auth::id()` — users can only see their own orders.
 
 **Views** (`resources/views/`): `layouts/app.blade.php` is the base (navbar, footer, `<x-page-loader />`, Vite, Google Fonts). Feature folders: `catalog/`, `product/`, `cart/`, `checkout/`, `account/`, `auth/`, `pages/`, `admin/`. The layout accepts `$hideNav` / `$hideFooter` Blade props — used by `auth/login.blade.php` and `admin/dashboard.blade.php` to suppress the public chrome. There's also a Blade component at `resources/views/components/page-loader.blade.php` (used as `<x-page-loader />`).
 
@@ -61,8 +69,9 @@ Standard Laravel 12 skeleton (slim `bootstrap/app.php`, no Kernel files; middlew
 
 ### State of the code (stubs to be aware of)
 
-- `CheckoutController` returns static views and a hardcoded `order=1`; **Niubiz payment is NOT integrated** despite the README describing a sandbox flow. The git history mentions a Niubiz sandbox in a separate "EcoModa" demo, not this codebase.
+- **Niubiz is NOT wired** despite the form having a "Tarjeta (Niubiz)" tab. No gateway call is made — orders paid with niubiz/yape/plin are marked `pagado` immediately. The `orders.niubiz_*` columns exist in the schema but are always null.
 - Most admin controllers beyond `DashboardController` are still placeholder stubs.
+- `AccountController` and the `account/*` views are stubs — `cuenta`, `cuenta/pedidos`, `cuenta/direcciones` return placeholder views without real data.
 
 ## Frontend / theming
 

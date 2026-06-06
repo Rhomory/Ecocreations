@@ -160,6 +160,84 @@
       animation: slideDownFade 0.5s ease-out;
   }
 
+  // ============================================================
+  //  Hero carrusel
+  // ============================================================
+
+  // Aseguramos que cada slide tenga altura completa y que el contenido
+  // del slide anterior no se solape mientras Bootstrap hace la transicion.
+  .hero-carousel {
+      .carousel-inner {
+          overflow: hidden;
+      }
+
+      .carousel-item {
+          // Bootstrap ya pone display:none al inactivo, pero forzamos
+          // tambien que el contenido no se desborde durante el slide.
+          transition: transform 0.6s ease-in-out;
+      }
+  }
+
+  // Tarjeta semi-translucida sobre la imagen del slide (info del producto)
+  .hero-product-card {
+      background-color: rgba($light, 0.92);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+  }
+
+  .hero-indicators {
+      bottom: 1rem;
+      margin-bottom: 0;
+      gap: 6px;
+
+      [data-bs-target] {
+          width: 32px;
+          height: 4px;
+          border: 0;
+          border-radius: 999px;
+          background-color: rgba($dark, 0.25);
+          opacity: 1;
+          transition: background-color 0.25s ease, width 0.25s ease;
+
+          &.active {
+              background-color: $dark;
+              width: 56px;
+          }
+      }
+  }
+
+  .hero-control {
+      width: auto;
+      opacity: 1;
+
+      .hero-control-icon {
+          width: 48px;
+          height: 48px;
+          color: $dark;
+          font-size: 1.25rem;
+          transition: transform 0.25s ease, background-color 0.25s ease;
+      }
+
+      &:hover .hero-control-icon {
+          background-color: $dark !important;
+          color: $light;
+          transform: scale(1.05);
+      }
+
+      // Bootstrap aplica un icono SVG; lo ocultamos para usar el nuestro
+      .carousel-control-prev-icon,
+      .carousel-control-next-icon {
+          display: none;
+      }
+  }
+
+  // En mobile los controles ocupan todo el ancho, queremos contenerlos
+  @include media-breakpoint-down(md) {
+      .hero-control {
+          width: 15%;
+      }
+  }
+
   // Card de categoría con hover sutil
   .category-card {
       transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -427,6 +505,133 @@
 
           .testimonio-quote {
               color: $secondary;
+          }
+      }
+  }
+
+  // ============================================================
+  //  Mi cuenta / Mis pedidos
+  // ============================================================
+  .account-section {
+      // Stats grandes: tipografía consistente
+      .account-stats {
+          .account-stat {
+              transition: transform 0.25s ease, box-shadow 0.25s ease;
+
+              &:hover {
+                  transform: translateY(-2px);
+                  box-shadow: 0 8px 20px rgba($dark, 0.06);
+              }
+          }
+      }
+  }
+
+  // Sidebar pills de Mi Cuenta
+  .account-sidebar {
+      // Ocultar scrollbar horizontal en mobile sin perder funcionalidad
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      &::-webkit-scrollbar { display: none; }
+
+      &__item {
+          padding: 0.625rem 1rem;
+          border-radius: 8px;
+          color: $dark;
+          font-size: 0.9375rem;
+          font-weight: 500;
+          white-space: nowrap;
+          transition: background-color 0.2s ease, color 0.2s ease;
+
+          i {
+              font-size: 1.125rem;
+              opacity: 0.7;
+          }
+
+          &:hover {
+              background-color: rgba($dark, 0.05);
+              color: $dark;
+              i { opacity: 1; }
+          }
+
+          &--active {
+              background-color: $dark;
+              color: $light;
+
+              &:hover { background-color: $dark; color: $light; }
+              i { opacity: 1; }
+          }
+
+          &--danger {
+              color: $danger;
+              cursor: pointer;
+
+              &:hover {
+                  background-color: rgba($danger, 0.08);
+                  color: $danger;
+              }
+          }
+      }
+  }
+
+  // Badges de estado de pedido (chips con dot)
+  .badge-estado {
+      padding: 0.375rem 0.75rem;
+      font-size: 0.625rem;
+      letter-spacing: 0.04em;
+      line-height: 1;
+
+      &__dot {
+          width: 6px;
+          height: 6px;
+          display: inline-block;
+      }
+
+      &--pendiente {
+          background-color: rgba($warning, 0.15);
+          color: darken($warning, 10%);
+          .badge-estado__dot { background-color: $warning; }
+      }
+
+      &--pagado {
+          background-color: rgba($primary, 0.12);
+          color: $primary;
+          .badge-estado__dot { background-color: $primary; }
+      }
+
+      &--enviado {
+          background-color: rgba($accent, 0.15);
+          color: darken($accent, 5%);
+          .badge-estado__dot { background-color: $accent; }
+      }
+
+      &--entregado {
+          background-color: rgba($success, 0.15);
+          color: $success;
+          .badge-estado__dot { background-color: $success; }
+      }
+
+      &--cancelado {
+          background-color: rgba($muted-color, 0.15);
+          color: $muted-color;
+          .badge-estado__dot { background-color: $muted-color; }
+      }
+  }
+
+  // Tabla de pedidos: hover sutil + estilos consistentes
+  .orders-table {
+      table {
+          tr {
+              transition: background-color 0.15s ease;
+
+              &:hover {
+                  background-color: rgba($dark, 0.02);
+              }
+          }
+
+          tbody tr {
+              border-bottom: 1px solid rgba($dark, 0.08);
+
+              &:last-child { border-bottom: 0; }
           }
       }
   }

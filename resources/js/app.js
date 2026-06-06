@@ -50,8 +50,10 @@ AOS.init({
     };
 
     document.addEventListener('click', (e) => {
+        if (e.defaultPrevented) return;
         const link = e.target.closest('a[href]');
         if (!link) return;
+        if (link.hasAttribute('data-no-loader')) return;
 
         const href = link.getAttribute('href');
         if (!href || href.startsWith('#') || href.startsWith('javascript:')) return;
@@ -70,10 +72,11 @@ AOS.init({
     });
 
     document.addEventListener('submit', (e) => {
+        if (e.defaultPrevented) return;
         const form = e.target;
-        if (form && form.tagName === 'FORM' && form.method.toLowerCase() !== 'get') {
-            mostrar();
-        }
+        if (!form || form.tagName !== 'FORM' || form.method.toLowerCase() === 'get') return;
+        if (form.hasAttribute('data-no-loader')) return;
+        mostrar();
     });
 
     window.addEventListener('pageshow', ocultar);

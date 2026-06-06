@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -23,6 +24,8 @@ class RegisterController extends Controller
             'password' => ['required', 'confirmed', Password::min(8)],
         ]);
 
+        $sessionIdPrevio = $request->session()->getId();
+
         $user = User::create([
             'name'     => $datos['name'],
             'email'    => $datos['email'],
@@ -32,6 +35,8 @@ class RegisterController extends Controller
 
         Auth::login($user);
         $request->session()->regenerate();
+
+        CartController::fusionarCarritoEnLogin($user->id, $sessionIdPrevio);
 
         return redirect()->route('account.index');
     }

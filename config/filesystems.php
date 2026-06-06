@@ -60,6 +60,14 @@ return [
             'report' => false,
         ],
 
+        // Disco usado por cloudinary-labs/cloudinary-laravel.
+        // El SDK lee la URL de aqui (no de config/cloudinary.php).
+        'cloudinary' => [
+            'driver' => 'cloudinary',
+            'url'    => env('CLOUDINARY_URL'),
+            'secure' => true,
+        ],
+
     ],
 
     /*

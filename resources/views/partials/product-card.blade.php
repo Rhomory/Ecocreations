@@ -5,20 +5,32 @@
 <div class="card border h-100 product-card">
 
     {{-- Imagen / placeholder --}}
-    <div class="bg-light rounded-top position-relative d-flex align-items-center justify-content-center"
+    @php
+        $imgPrincipal = $product->relationLoaded('images')
+            ? $product->images->firstWhere('es_principal', true) ?? $product->images->first()
+            : $product->images()->orderByDesc('es_principal')->first();
+    @endphp
+    <div class="bg-light rounded-top position-relative overflow-hidden"
         style="height: 240px;">
 
         {{-- Badge ECO --}}
-        <span class="badge bg-primary position-absolute top-0 end-0 m-2 font-mono fs-8">ECO</span>
+        <span class="badge bg-primary position-absolute top-0 end-0 m-2 font-mono fs-8" style="z-index:1;">ECO</span>
 
         {{-- Badge personalizable --}}
         @if ($product->es_personalizable)
-            <span class="badge bg-accent position-absolute top-0 start-0 m-2 font-mono fs-8">
+            <span class="badge bg-accent position-absolute top-0 start-0 m-2 font-mono fs-8" style="z-index:1;">
                 Personalizable
             </span>
         @endif
 
-        <i class="bi bi-image fs-1 text-muted-eco opacity-50"></i>
+        <x-cloud-img
+            :src="$imgPrincipal?->ruta"
+            :alt="$imgPrincipal?->alt_text ?? $product->nombre"
+            :w="500"
+            :h="480"
+            crop="fill"
+            class="w-100 h-100"
+            style="object-fit: cover;" />
     </div>
 
     <div class="card-body d-flex flex-column p-3">

@@ -8,15 +8,26 @@ APP_KEY="${APP_KEY}"
 APP_DEBUG="${APP_DEBUG}"
 APP_URL="${APP_URL}"
 
+APP_LOCALE=es
+APP_FALLBACK_LOCALE=en
+
 DB_CONNECTION="${DB_CONNECTION}"
 DB_HOST="${DB_HOST}"
 DB_PORT="${DB_PORT}"
 DB_DATABASE="${DB_DATABASE}"
 DB_USERNAME="${DB_USERNAME}"
 DB_PASSWORD="${DB_PASSWORD}"
+
+SESSION_DRIVER=database
+SESSION_LIFETIME=120
+CACHE_STORE=database
+QUEUE_CONNECTION=database
+
+CLOUDINARY_URL="${CLOUDINARY_URL}"
+CLOUDINARY_UPLOAD_PRESET="${CLOUDINARY_UPLOAD_PRESET}"
 EOF
 
-# Migraciones + Seeders
+# Migraciones + Seeders (seeders son idempotentes; no duplican datos)
 php artisan migrate --force
 php artisan db:seed --force
 

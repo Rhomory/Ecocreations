@@ -5,94 +5,144 @@
 @section('content')
 
     {{-- ============================================================ --}}
-    {{-- HERO --}}
+    {{-- HERO — Carrusel de 3 slides con productos destacados --}}
     {{-- ============================================================ --}}
-    <section class="hero-section position-relative overflow-hidden py-5 py-lg-0">
-        <div class="container py-lg-5">
-            <div class="row align-items-center g-4 g-lg-5">
+    @php
+        // Copy curado por slide: cada destacado se presenta con una historia distinta.
+        // Si hay menos de 3 productos destacados, se completa con $destacados.
+        $copyHero = [
+            ['kicker' => '— Colección 2026', 'titulo' => 'Productos<br><em>ecológicos,</em><br>hechos a tu<br>medida.', 'texto' => 'Botellas, bolsas y utensilios sostenibles que personalizás con tu nombre, tu marca o tu causa. Producción peruana, materiales certificados.'],
+            ['kicker' => '— Producción local', 'titulo' => '<em>Hecho</em><br>en el Perú,<br>pensado para<br>durar.', 'texto' => 'Talleres peruanos con trabajo justo, materiales certificados FSC y bajo impacto en cada paso del proceso.'],
+            ['kicker' => '— Personalización gratis', 'titulo' => 'Tu marca,<br>tu nombre,<br><em>tu causa.</em>', 'texto' => 'Grabado láser y serigrafía sin costo adicional. Pedidos desde 1 unidad para personas, desde 20 para empresas.'],
+        ];
 
-                {{-- Lado izquierdo: texto --}}
-                <div class="col-lg-6 position-relative">
-                    {{-- Badge superior --}}
-                    <div class="d-flex align-items-center gap-2 mb-4" data-aos="fade-up">
-                        <span
-                            class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-2 font-mono fs-8">
-                            <i class="bi bi-leaf-fill me-1"></i>100% ECO
-                        </span>
-                        <span class="font-mono fs-8 text-muted-eco text-uppercase">
-                            — Colección 2026
-                        </span>
-                    </div>
+        $slidesParaRender = $slidesHero->isNotEmpty() ? $slidesHero : $destacados->take(3);
+    @endphp
 
-                    {{-- Título --}}
-                    <h1 class="font-serif display-2 fw-normal lh-1 mb-4" data-aos="fade-up" data-aos-delay="100">
-                        Productos<br>
-                        <em>ecológicos,</em><br>
-                        hechos a tu<br>
-                        medida.
-                    </h1>
+    <section class="hero-section position-relative overflow-hidden">
+        <div id="heroCarousel" class="carousel slide hero-carousel" data-bs-ride="carousel" data-bs-interval="6000">
 
-                    {{-- Subtítulo --}}
-                    <p class="lead text-muted-eco mb-4 pe-lg-5" data-aos="fade-up" data-aos-delay="200">
-                        Botellas, bolsas y utensilios sostenibles que personalizás con tu nombre,
-                        tu marca o tu causa. Producción peruana, materiales certificados.
-                    </p>
-
-                    {{-- CTAs --}}
-                    <div class="d-flex flex-wrap gap-3 mb-3" data-aos="fade-up" data-aos-delay="300">
-                        <a href="{{ route('catalog.index') }}"
-                            class="btn btn-dark rounded-pill px-4 py-3 d-inline-flex align-items-center gap-2">
-                            <i class="bi bi-bag"></i>
-                            Ver catálogo
-                            <i class="bi bi-arrow-right ms-1"></i>
-                        </a>
-                        <a href="{{ route('page.about') }}" class="btn btn-outline-dark rounded-pill px-4 py-3">
-                            Conocer la marca
-                        </a>
-                    </div>
-                </div>
-
-                {{-- Lado derecho: imagen + bottom row --}}
-                <div class="col-lg-6" data-aos="fade-left" data-aos-delay="200">
-                    {{-- Imagen principal --}}
-                    <div class="hero-image bg-secondary rounded-3 d-flex flex-column justify-content-between p-4 mb-3"
-                        style="min-height: 480px;">
-
-                        <div class="d-flex justify-content-between align-items-start">
-                            <span class="font-mono fs-8 text-dark">N° 001 / 24</span>
-                            <span class="badge bg-dark text-light rounded-pill px-3 py-2 font-mono fs-8">
-                                100% RECICLABLE
-                            </span>
-                        </div>
-
-                        <div>
-                            <h3 class="font-serif fs-2 text-dark mb-1">Botella Andina · 600ml</h3>
-                            <p class="font-mono mb-0 text-dark">S/ 49.90</p>
-                        </div>
-                    </div>
-
-                    {{-- Bottom row: 2 estadísticas --}}
-                    <div class="row g-3">
-                        <div class="col-6">
-                            <div class="bg-light border rounded-3 p-3 p-lg-4 h-100">
-                                <h4 class="font-serif fw-bold mb-0">+12K</h4>
-                                <p class="font-mono fs-8 text-muted-eco text-uppercase mb-0 mt-1">
-                                    Productos personalizados
-                                </p>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="bg-primary text-light rounded-3 p-3 p-lg-4 h-100">
-                                <h4 class="font-serif fw-bold mb-0">98%</h4>
-                                <p class="font-mono fs-8 text-light opacity-75 text-uppercase mb-0 mt-1">
-                                    Materiales sostenibles
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
+            {{-- Indicadores (barras estilo .pen) --}}
+            <div class="carousel-indicators hero-indicators">
+                @foreach ($slidesParaRender as $i => $_)
+                    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="{{ $i }}"
+                        @class(['active' => $i === 0]) aria-label="Slide {{ $i + 1 }}"
+                        @if ($i === 0) aria-current="true" @endif></button>
+                @endforeach
             </div>
+
+            {{-- Slides --}}
+            <div class="carousel-inner">
+                @foreach ($slidesParaRender as $i => $producto)
+                    @php
+                        $copy = $copyHero[$i] ?? $copyHero[0];
+                        $imgPrincipal = $producto->images->sortByDesc('es_principal')->first();
+                        $numero = str_pad($producto->id, 3, '0', STR_PAD_LEFT);
+                    @endphp
+                    <div @class(['carousel-item', 'active' => $i === 0])>
+                        <div class="container py-5 py-lg-5">
+                            <div class="row align-items-center g-4 g-lg-5">
+
+                                {{-- Lado izquierdo: copy + producto --}}
+                                <div class="col-lg-6 position-relative">
+                                    <div class="d-flex align-items-center gap-2 mb-4">
+                                        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-2 font-mono fs-8">
+                                            <i class="bi bi-leaf-fill me-1"></i>100% ECO
+                                        </span>
+                                        <span class="font-mono fs-8 text-muted-eco text-uppercase">
+                                            {{ $copy['kicker'] }}
+                                        </span>
+                                    </div>
+
+                                    <h1 class="font-serif display-2 fw-normal lh-1 mb-4">
+                                        {!! $copy['titulo'] !!}
+                                    </h1>
+
+                                    <p class="lead text-muted-eco mb-4 pe-lg-5">
+                                        {{ $copy['texto'] }}
+                                    </p>
+
+                                    <div class="d-flex flex-wrap gap-3 mb-3">
+                                        <a href="{{ route('product.show', $producto->slug) }}"
+                                            class="btn btn-dark rounded-pill px-4 py-3 d-inline-flex align-items-center gap-2">
+                                            <i class="bi bi-bag"></i>
+                                            Ver {{ \Illuminate\Support\Str::lower(\Illuminate\Support\Str::words($producto->nombre, 2, '')) }}
+                                            <i class="bi bi-arrow-right ms-1"></i>
+                                        </a>
+                                        <a href="{{ route('catalog.index') }}" class="btn btn-outline-dark rounded-pill px-4 py-3">
+                                            Ver catálogo
+                                        </a>
+                                    </div>
+                                </div>
+
+                                {{-- Lado derecho: card del producto con imagen real --}}
+                                <div class="col-lg-6">
+                                    <a href="{{ route('product.show', $producto->slug) }}" class="text-decoration-none text-dark">
+                                        <div class="hero-image bg-secondary rounded-3 position-relative overflow-hidden d-flex flex-column justify-content-between p-4 mb-3"
+                                            style="min-height: 480px;">
+
+                                            <x-cloud-img :src="$imgPrincipal?->ruta" :alt="$producto->nombre"
+                                                :w="1200" :h="960" crop="fill"
+                                                class="position-absolute top-0 start-0 w-100 h-100"
+                                                style="object-fit: cover; z-index: 0;" />
+
+                                            <div class="d-flex justify-content-between align-items-start position-relative" style="z-index: 1;">
+                                                <span class="font-mono fs-8 fw-bold text-light bg-dark bg-opacity-50 px-2 py-1 rounded">
+                                                    N° {{ $numero }} / {{ str_pad($i + 1, 2, '0', STR_PAD_LEFT) }}
+                                                </span>
+                                                <span class="badge bg-dark text-light rounded-pill px-3 py-2 font-mono fs-8">
+                                                    100% RECICLABLE
+                                                </span>
+                                            </div>
+
+                                            <div class="position-relative rounded-2 p-3 hero-product-card" style="z-index: 1;">
+                                                <p class="font-mono fs-8 text-muted-eco text-uppercase mb-1">{{ $producto->category->nombre ?? 'Eco' }}</p>
+                                                <h3 class="font-serif fs-2 text-dark mb-1">{{ $producto->nombre }}</h3>
+                                                <p class="font-mono mb-0 text-dark">S/ {{ number_format($producto->precio_base, 2) }}</p>
+                                            </div>
+                                        </div>
+                                    </a>
+
+                                    {{-- Stats fijas (no cambian entre slides) --}}
+                                    <div class="row g-3">
+                                        <div class="col-6">
+                                            <div class="bg-light border rounded-3 p-3 p-lg-4 h-100">
+                                                <h4 class="font-serif fw-bold mb-0">+12K</h4>
+                                                <p class="font-mono fs-8 text-muted-eco text-uppercase mb-0 mt-1">
+                                                    Productos personalizados
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="bg-primary text-light rounded-3 p-3 p-lg-4 h-100">
+                                                <h4 class="font-serif fw-bold mb-0">98%</h4>
+                                                <p class="font-mono fs-8 text-light opacity-75 text-uppercase mb-0 mt-1">
+                                                    Materiales sostenibles
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
+            {{-- Controles prev / next --}}
+            <button class="carousel-control-prev hero-control" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+                <span class="hero-control-icon d-flex align-items-center justify-content-center bg-light border rounded-circle shadow-sm">
+                    <i class="bi bi-arrow-left"></i>
+                </span>
+                <span class="visually-hidden">Anterior</span>
+            </button>
+            <button class="carousel-control-next hero-control" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+                <span class="hero-control-icon d-flex align-items-center justify-content-center bg-light border rounded-circle shadow-sm">
+                    <i class="bi bi-arrow-right"></i>
+                </span>
+                <span class="visually-hidden">Siguiente</span>
+            </button>
         </div>
     </section>
 
@@ -196,18 +246,39 @@
     </section>
 
     {{-- ============================================================ --}}
-    {{-- DESTACADOS (PLACEHOLDER — completar más tarde) --}}
+    {{-- DESTACADOS --}}
     {{-- ============================================================ --}}
     <section class="py-5" style="background-color: #E8E2D4;">
         <div class="container py-lg-4">
-            <div class="text-center py-5">
-                <span class="badge bg-warning text-dark font-mono px-3 py-2">
-                    SECCIÓN EN CONSTRUCCIÓN
-                </span>
-                <p class="text-muted-eco mt-3 mb-0">
-                    Productos destacados — se completará más tarde
-                </p>
+
+            {{-- Header --}}
+            <div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-4 mb-lg-5">
+                <div data-aos="fade-up">
+                    <p class="font-mono fs-8 text-accent text-uppercase fw-semibold mb-2">
+                        — Más pedidos esta temporada
+                    </p>
+                    <h2 class="font-serif fs-1 mb-0">Productos destacados</h2>
+                </div>
+                <a href="{{ route('catalog.index') }}"
+                    class="text-dark text-decoration-none fw-semibold d-inline-flex align-items-center gap-1">
+                    Ver catálogo completo <i class="bi bi-arrow-right"></i>
+                </a>
             </div>
+
+            @if ($destacados->isNotEmpty())
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4">
+                    @foreach ($destacados as $product)
+                        <div class="col" data-aos="fade-up" data-aos-delay="{{ $loop->index * 100 }}">
+                            @include('partials.product-card', ['product' => $product])
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <div class="text-center py-5">
+                    <i class="bi bi-bag-x fs-1 text-muted-eco opacity-50"></i>
+                    <p class="text-muted-eco mt-3 mb-0">Pronto verás aquí nuestros productos destacados.</p>
+                </div>
+            @endif
         </div>
     </section>
 

@@ -74,10 +74,10 @@
 
                     {{-- Imagen + Info --}}
                     <div class="d-flex align-items-center gap-3 flex-grow-1 w-100">
-                        <div class="bg-secondary rounded d-flex align-items-center justify-content-center flex-shrink-0"
-                             style="width: 96px; height: 96px;">
-                            <i class="bi bi-image fs-3 text-primary opacity-50"></i>
-                        </div>
+                        <x-cloud-img :src="$item['imagen'] ?? null" :alt="$item['nombre']"
+                            :w="192" :h="192" crop="fill"
+                            class="bg-secondary rounded flex-shrink-0"
+                            style="width: 96px; height: 96px; object-fit: cover;" />
                         <div class="flex-grow-1 min-w-0">
                             <p class="font-mono fs-8 text-muted-eco text-uppercase mb-1">{{ $item['categoria'] }}</p>
                             <h3 class="font-serif fs-5 mb-1">

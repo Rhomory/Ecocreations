@@ -11,7 +11,8 @@ class CatalogController extends Controller
     public function index(Request $request)
     {
         // --- Consulta base: solo productos activos, con su categoría cargada ---
-        $query = Product::with('category')->where('activo', true);
+        $query = Product::with(['category', 'images' => fn ($q) => $q->orderByDesc('es_principal')->orderBy('orden')])
+            ->where('activo', true);
 
         // --- Filtro: búsqueda por nombre (?q=...) ---
         if ($request->filled('q')) {
@@ -57,7 +58,7 @@ class CatalogController extends Controller
             ->get();
 
         // --- Banner "Producto del mes": primer producto destacado ---
-        $featured = Product::with('category')
+        $featured = Product::with(['category', 'images' => fn ($q) => $q->orderByDesc('es_principal')])
             ->where('activo', true)
             ->where('es_destacado', true)
             ->first();
@@ -71,7 +72,9 @@ class CatalogController extends Controller
         $category = Category::where('slug', $slug)->firstOrFail();
 
         // Consulta base de productos de esa categoría
-        $query = $category->products()->where('activo', true);
+        $query = $category->products()
+            ->with(['images' => fn ($q) => $q->orderByDesc('es_principal')])
+            ->where('activo', true);
 
         // --- Orden (?orden=...) ---
         switch ($request->query('orden')) {

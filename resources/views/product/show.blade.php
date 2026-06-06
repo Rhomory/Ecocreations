@@ -54,32 +54,45 @@
         <div class="row g-4 g-lg-5 mt-2">
 
             {{-- ===== Galería ===== --}}
+            @php
+                $galeria = $product->images->sortByDesc('es_principal')->values();
+                $imgPrincipal = $galeria->first();
+                $totalImgs = max($galeria->count(), 1);
+            @endphp
             <div class="col-lg-6" data-aos="fade-right">
                 <div class="d-flex gap-3">
 
                     {{-- Miniaturas (vertical, izquierda) --}}
-                    <div class="d-none d-md-flex flex-column gap-2" style="width: 80px;">
-                        @php
-                            $thumbIcons = ['bi-image', 'bi-images', 'bi-box', 'bi-stars'];
-                        @endphp
-                        @foreach ($thumbIcons as $i => $icon)
-                            <button type="button"
-                                class="btn p-0 rounded d-flex align-items-center justify-content-center
-                                       {{ $i === 0 ? 'bg-secondary border border-dark border-2' : 'bg-light border' }}"
-                                style="height: 80px;">
-                                <i
-                                    class="bi {{ $icon }} fs-4 {{ $i === 0 ? 'text-primary' : 'text-muted-eco opacity-50' }}"></i>
-                            </button>
-                        @endforeach
-                    </div>
+                    @if ($galeria->count() > 1)
+                        <div class="d-none d-md-flex flex-column gap-2" style="width: 80px;">
+                            @foreach ($galeria->take(4) as $i => $img)
+                                <button type="button"
+                                    class="btn p-0 rounded overflow-hidden product-thumb
+                                           {{ $i === 0 ? 'border border-dark border-2' : 'border' }}"
+                                    style="height: 80px;"
+                                    data-full="{{ $img->ruta }}">
+                                    <x-cloud-img :src="$img->ruta" :alt="$img->alt_text ?? $product->nombre"
+                                        :w="160" :h="160" crop="fill"
+                                        class="w-100 h-100" style="object-fit: cover;" />
+                                </button>
+                            @endforeach
+                        </div>
+                    @endif
 
                     {{-- Imagen principal --}}
                     <div class="flex-grow-1">
-                        <div class="bg-secondary rounded position-relative d-flex flex-column justify-content-between p-4"
+                        <div class="bg-secondary rounded position-relative overflow-hidden d-flex flex-column justify-content-between p-4"
                             style="aspect-ratio: 3/4; min-height: 480px;">
 
+                            <x-cloud-img id="productMainImg"
+                                :src="$imgPrincipal?->ruta"
+                                :alt="$imgPrincipal?->alt_text ?? $product->nombre"
+                                :w="900" :h="1200" crop="fill"
+                                class="position-absolute top-0 start-0 w-100 h-100"
+                                style="object-fit: cover; z-index: 0;" />
+
                             {{-- Top: badges + zoom --}}
-                            <div class="d-flex justify-content-between align-items-start">
+                            <div class="d-flex justify-content-between align-items-start position-relative" style="z-index: 1;">
                                 <div class="d-flex gap-2">
                                     <span class="badge bg-dark font-mono fs-8 px-3 py-2 rounded">ECO</span>
                                     @if ($product->es_personalizable)
@@ -93,17 +106,12 @@
                                 </button>
                             </div>
 
-                            {{-- Centro: icono placeholder --}}
-                            <div class="position-absolute top-50 start-50 translate-middle text-center">
-                                <i class="bi bi-image display-1 text-primary opacity-50"></i>
-                            </div>
-
                             {{-- Bottom: meta --}}
-                            <div class="d-flex justify-content-between align-items-end">
-                                <span class="font-mono fs-8 fw-bold text-dark">
-                                    Nº {{ str_pad($product->id, 3, '0', STR_PAD_LEFT) }} · 1 / 4
+                            <div class="d-flex justify-content-between align-items-end position-relative" style="z-index: 1;">
+                                <span class="font-mono fs-8 fw-bold text-light bg-dark bg-opacity-50 px-2 py-1 rounded">
+                                    Nº {{ str_pad($product->id, 3, '0', STR_PAD_LEFT) }} · 1 / {{ $totalImgs }}
                                 </span>
-                                <span class="font-mono fs-8 fw-bold text-dark text-uppercase">
+                                <span class="font-mono fs-8 fw-bold text-light bg-dark bg-opacity-50 px-2 py-1 rounded text-uppercase">
                                     Vista previa en vivo
                                 </span>
                             </div>
@@ -345,6 +353,19 @@
     {{-- ===== JS ===== --}}
     @push('scripts')
         <script>
+            // Cambiar imagen principal al hacer click en una miniatura
+            document.querySelectorAll('.product-thumb').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const url = btn.dataset.full;
+                    const main = document.getElementById('productMainImg');
+                    if (main && url) main.src = url;
+                    document.querySelectorAll('.product-thumb').forEach(b => {
+                        b.classList.toggle('border-dark', b === btn);
+                        b.classList.toggle('border-2', b === btn);
+                    });
+                });
+            });
+
             function ajustarCantidad(delta) {
                 const input = document.getElementById('cantidad');
                 const nuevo = parseInt(input.value || 1) + delta;

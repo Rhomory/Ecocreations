@@ -2,11 +2,37 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Blameable;
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    //
+    use Blameable;
+
+    protected $fillable = [
+        'numero_orden',
+        'user_id',
+        'address_id',
+        'payment_method_id',
+        'coupon_id',
+        'subtotal',
+        'descuento',
+        'igv',
+        'envio',
+        'total',
+        'estado',
+        'notas',
+        'niubiz_purchase_number',
+        'niubiz_transaction_id',
+        'niubiz_action_code',
+        'niubiz_response',
+        'pagado_at',
+    ];
+
+    protected $casts = [
+        'niubiz_response' => 'array',
+        'pagado_at'       => 'datetime',
+    ];
 
     public function user()
     {

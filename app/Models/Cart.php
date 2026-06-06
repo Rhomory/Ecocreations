@@ -4,9 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @method static \Illuminate\Database\Eloquent\Builder query()
+ */
 class Cart extends Model
 {
-    //
+    protected $fillable = [
+        'user_id',
+        'session_id',
+    ];
 
     public function user()
     {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,6 +23,7 @@ class LoginController extends Controller
         ]);
 
         $remember = $request->boolean('remember');
+        $sessionIdPrevio = $request->session()->getId();
 
         if (! Auth::attempt($credenciales, $remember)) {
             throw ValidationException::withMessages([
@@ -30,6 +32,9 @@ class LoginController extends Controller
         }
 
         $request->session()->regenerate();
+
+        // Fusionar carrito de invitado (por session_id) con el carrito del usuario
+        CartController::fusionarCarritoEnLogin(Auth::id(), $sessionIdPrevio);
 
         return $this->redirigirSegunRol();
     }
